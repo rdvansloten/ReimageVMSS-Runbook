@@ -3,7 +3,7 @@ param(
     [string] $vmScaleSetResourceGroupName,
 
     [Parameter(mandatory=$true)]
-    [string] $vmScaleSetName
+    [string] $vmScaleSetName,
 
     [Parameter(mandatory=$false)]
     [string] $frontDoorName,
