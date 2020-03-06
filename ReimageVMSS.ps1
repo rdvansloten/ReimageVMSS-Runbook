@@ -41,9 +41,9 @@ Write-Output "Reimaging VM instances"
 foreach ( $vmInstanceName in $vmInstances ) {
 
     # Check if there is at least one healthy VM
-    while( $($vmInstances).ProvisioningState -NotContains "Succeeded" ) {
-        Write-Output "Waiting for a VM to become Succeeded"
-        Start-Sleep -Seconds 300  
+    while( $($vmInstances).ProvisioningState -Contains "Updating" ) {
+        Write-Output "Waiting for all VMs to become Succeeded"
+        Start-Sleep -Seconds 60 
     }
 
     # Upgrade the selected InstanceID
@@ -54,9 +54,8 @@ foreach ( $vmInstanceName in $vmInstances ) {
     Write-Output "Reimaging $($vmInstanceName.Name)"
     Set-AzureRmVmssVM -Reimage -ResourceGroupName $vmScaleSetResourceGroupName -VMScaleSetName $vmScaleSetName -InstanceId "$($vmInstanceName.InstanceID)"
 
-    # Take a nap
-    Start-Sleep -Seconds 120
-
+    # Cooldown period before starting the next VM
+    Start-Sleep -Seconds 360
 }
 
 if ( $frontDoorName -and $frontDoorResourceGroupName ) {
